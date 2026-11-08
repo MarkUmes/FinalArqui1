@@ -1,0 +1,36 @@
+import 'reflect-metadata';
+import { Module, ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { PedidosController } from './controlador.js';
+import { Pedido } from './pedido.js';
+import { Pedidos } from './pedidos.js';
+import { PedidosDatos } from './datos.js';
+import { ProductosCliente } from './productos-cliente.js';
+
+@Module({
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: process.env.DB_HOST ?? 'localhost',
+      port: Number(process.env.DB_PORT ?? 3306),
+      database: process.env.DB_NAME,
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      entities: [Pedido],
+      // El esquema se crea con los scripts SQL versionados.
+      synchronize: false,
+    }),
+    TypeOrmModule.forFeature([Pedido]),
+  ],
+  controllers: [PedidosController],
+  providers: [Pedidos, PedidosDatos, ProductosCliente],
+})
+class App {}
+
+const app = await NestFactory.create(App);
+app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true }));
+const swagger = new DocumentBuilder().setTitle('Pedidos').setVersion('1.0').build();
+SwaggerModule.setup('docs', app, () => SwaggerModule.createDocument(app, swagger));
+await app.listen(Number(process.env.PORT ?? 3002), '0.0.0.0');
