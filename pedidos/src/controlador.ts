@@ -71,7 +71,6 @@ export class PedidosController {
     @Headers('idempotency-key') clave: string | undefined,
     @Body() entrada: CrearPedido,
   ): Promise<PedidoVista> {
-    // Validar la clave antes de consultar cualquier servicio.
     if (!clave || !isUUID(clave, '4')) throw new BadRequestException('Idempotency-Key debe ser un UUID v4');
     return PedidoVista.desde(await this.pedidos.crear(clave.toLowerCase(), entrada));
   }

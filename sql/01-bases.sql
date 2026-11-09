@@ -1,4 +1,3 @@
--- Cada servicio tiene su propia base dentro de la misma instancia MySQL.
 CREATE DATABASE IF NOT EXISTS broker CHARACTER SET utf8mb4;
 CREATE DATABASE IF NOT EXISTS productos CHARACTER SET utf8mb4;
 CREATE DATABASE IF NOT EXISTS pedidos CHARACTER SET utf8mb4;
@@ -15,7 +14,6 @@ CREATE TABLE IF NOT EXISTS productos.productos (
   stock INT NOT NULL CHECK (stock >= 0)
 );
 
--- Guardar la operación por pedido permite repetir una solicitud sin descontar dos veces.
 CREATE TABLE IF NOT EXISTS productos.descuentos (
   pedido_id CHAR(36) PRIMARY KEY,
   producto_id INT NOT NULL,

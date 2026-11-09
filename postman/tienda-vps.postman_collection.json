@@ -137,7 +137,6 @@
               "    const { Buffer } = require('buffer');",
               "    vence = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString()).exp;",
               "  } catch {",
-              "    // Un token incompleto se trata igual que uno vencido.",
               "  }",
               "}",
               "",

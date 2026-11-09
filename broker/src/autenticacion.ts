@@ -26,7 +26,6 @@ export class Autenticacion implements OnModuleInit {
     const usuario = variable('ADMIN_USUARIO');
     if (await this.usuarios.findOneBy({ usuario })) return;
 
-    // La cuenta inicial se guarda como sal y hash. La contraseña viene del entorno.
     const sal = randomBytes(16).toString('hex');
     const hash = await derivar(variable('ADMIN_PASSWORD'), sal, 48) as Buffer;
     const clave = `${sal}:${hash.toString('hex')}`;

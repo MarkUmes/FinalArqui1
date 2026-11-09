@@ -42,7 +42,6 @@ export class DescuentoVista {
   precioUnitario!: string;
 }
 
-// La vista REST decide qué campos del modelo aparecen en el JSON.
 export class ProductoVista {
   @ApiProperty()
   id!: number;

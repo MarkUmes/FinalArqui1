@@ -19,7 +19,6 @@ import { ProductosCliente } from './productos-cliente.js';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       entities: [Pedido],
-      // El esquema se crea con los scripts SQL versionados.
       synchronize: false,
     }),
     TypeOrmModule.forFeature([Pedido]),

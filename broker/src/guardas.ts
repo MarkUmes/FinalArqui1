@@ -32,7 +32,6 @@ export class LecturaGuard implements CanActivate {
   constructor(private readonly auth: Autenticacion) {}
 
   async canActivate(contexto: ExecutionContext): Promise<boolean> {
-    // Pedidos usa su credencial propia para leer un producto desde el broker.
     const token = bearer(contexto);
     if (!esServicio(token)) await this.auth.verificar(token);
     return true;

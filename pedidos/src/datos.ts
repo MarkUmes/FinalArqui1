@@ -21,7 +21,6 @@ export class PedidosDatos {
   }
 
   async pendiente(id: string, entrada: EntradaPedido): Promise<Pedido> {
-    // Si llegaron dos solicitudes con la misma clave, ambas recuperan la misma fila.
     await this.pedidos.createQueryBuilder().insert()
       .values({ id, ...entrada, estado: 'PENDIENTE' }).orIgnore().execute();
     return this.pedidos.findOneByOrFail({ id });

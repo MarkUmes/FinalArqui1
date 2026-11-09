@@ -6,7 +6,6 @@
     cuenta="$1"
     clave="$2"
 
-    # La clave se interpola en SQL. Aceptar solo caracteres sin significado en el literal.
     case "$clave" in
       ''|*[!a-zA-Z0-9_-]*)
         printf 'Clave MySQL inválida para %s\n' "$cuenta" >&2

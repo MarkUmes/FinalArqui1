@@ -8,7 +8,6 @@ export class Producto {
   @Column({ length: 120 })
   nombre!: string;
 
-  // MySQL entrega DECIMAL como texto para conservar los centavos.
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   precio!: string;
 

@@ -44,7 +44,6 @@ export class Productos {
     const movimiento = await this.db.transaction(async (tx) => {
       const descuentos = tx.getRepository(Descuento);
 
-      // Un UPDATE sin cambios toma el bloqueo exclusivo aun cuando el pedido ya existe.
       await descuentos.createQueryBuilder().insert().values({ pedidoId, productoId, cantidad })
         .orUpdate(['pedido_id']).execute();
       const registro = await descuentos.findOneOrFail({
@@ -62,7 +61,6 @@ export class Productos {
         lock: { mode: 'pessimistic_write' },
       });
 
-      // El bloqueo del producto protege la última unidad entre pedidos distintos.
       if (!producto) {
         registro.resultado = 404;
       } else if (producto.stock < cantidad) {
@@ -76,7 +74,6 @@ export class Productos {
       return descuentos.save(registro);
     });
 
-    // Comunicar el error después del commit conserva el resultado para los reintentos.
     if (movimiento.resultado === 404) throw new NotFoundException('El producto no existe');
     if (movimiento.resultado === 409) throw new ConflictException('Existencias insuficientes');
     return { precioUnitario: movimiento.precioUnitario! };

@@ -10,7 +10,6 @@ export class ErroresEntrada extends BaseExceptionFilter {
       return;
     }
 
-    // El analizador HTTP devuelve un texto. Las validaciones de campos ya devuelven una lista.
     const respuesta = error.getResponse();
     const mensaje = typeof respuesta === 'string' ? respuesta : ('message' in respuesta ? respuesta.message : undefined);
     if (typeof mensaje === 'string') {

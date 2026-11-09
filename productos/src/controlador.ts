@@ -67,7 +67,6 @@ export class InventarioController {
     @Body() entrada: SolicitarDescuento,
     @Headers('x-servicio-token') token: string | undefined,
   ): Promise<DescuentoVista> {
-    // Este encabezado lo agrega el broker al reenviar una operación interna autenticada.
     if (!token || token !== process.env.SERVICIO_TOKEN) {
       throw new UnauthorizedException('Credencial de servicio inválida');
     }

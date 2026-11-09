@@ -19,7 +19,6 @@ import { Proxy } from './proxy.js';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       entities: [Usuario],
-      // El broker guarda usuarios. Las bases de Productos y Pedidos tienen sus propios permisos.
       synchronize: false,
     }),
     TypeOrmModule.forFeature([Usuario]),

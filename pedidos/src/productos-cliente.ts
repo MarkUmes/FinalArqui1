@@ -14,7 +14,6 @@ export class ProductosCliente {
   }
 
   private async enviar<T>(ruta: string, cuerpo?: object): Promise<T> {
-    // Pedidos conoce la dirección del broker. El broker resuelve el destino de Productos.
     const signal = AbortSignal.timeout(6500);
     let respuesta: Response;
     try {
