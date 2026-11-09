@@ -6,15 +6,15 @@ import { Pedidos } from './pedidos.js';
 
 class CrearPedido {
   @ApiProperty({ example: 1, minimum: 1, type: 'integer' })
-  @IsInt()
-  @Min(1)
-  @Max(2147483647)
+  @IsInt({ message: 'El identificador del producto debe ser un número entero' })
+  @Min(1, { message: 'El identificador del producto debe ser mayor que cero' })
+  @Max(2147483647, { message: 'El identificador del producto no puede superar 2147483647' })
   productoId!: number;
 
   @ApiProperty({ example: 2, minimum: 1, type: 'integer' })
-  @IsInt()
-  @Min(1)
-  @Max(2147483647)
+  @IsInt({ message: 'La cantidad debe ser un número entero' })
+  @Min(1, { message: 'La cantidad debe ser de al menos 1 unidad' })
+  @Max(2147483647, { message: 'La cantidad no puede superar 2147483647 unidades' })
   cantidad!: number;
 }
 
@@ -55,7 +55,12 @@ export class PedidosController {
 
   @Get(':id')
   @ApiOkResponse({ type: PedidoVista })
-  async buscar(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string): Promise<PedidoVista> {
+  async buscar(
+    @Param('id', new ParseUUIDPipe({
+      version: '4',
+      exceptionFactory: () => new BadRequestException('El identificador del pedido debe ser un UUID v4'),
+    })) id: string,
+  ): Promise<PedidoVista> {
     return PedidoVista.desde(await this.pedidos.buscar(id.toLowerCase()));
   }
 

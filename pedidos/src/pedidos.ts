@@ -27,7 +27,7 @@ export class Pedidos {
     if (!pedido) {
       try {
         const producto = await this.productos.consultar(productoId);
-        if (producto.stock < cantidad) throw new ConflictException('Stock insuficiente');
+        if (producto.stock < cantidad) throw new ConflictException('Existencias insuficientes');
       } catch (error) {
         // Otra solicitud con esta clave pudo confirmar mientras se consultaba el stock.
         pedido = await this.datos.buscar(id);
@@ -42,7 +42,7 @@ export class Pedidos {
     if (pedido.estado === 'CONFIRMADO') return pedido;
     if (pedido.estado === 'RECHAZADO') {
       if (pedido.error === 404) throw new NotFoundException('El producto no existe');
-      throw new ConflictException('Stock insuficiente');
+      throw new ConflictException('Existencias insuficientes');
     }
 
     // Tras un timeout, reutilizar el mismo id recupera el resultado del descuento anterior.

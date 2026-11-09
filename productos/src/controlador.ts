@@ -1,11 +1,16 @@
 import {
-  Body, Controller, Delete, Get, Headers, HttpCode, Param, ParseIntPipe, Patch, Post, UnauthorizedException,
+  BadRequestException, Body, Controller, Delete, Get, Headers, HttpCode, Param, ParseIntPipe, Patch, Post,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse, ApiHeader, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiTags,
 } from '@nestjs/swagger';
 import { Productos } from './productos.js';
 import { ActualizarProducto, CrearProducto, DescuentoVista, ProductoVista, SolicitarDescuento } from './vista.js';
+
+const idProducto = new ParseIntPipe({
+  exceptionFactory: () => new BadRequestException('El identificador del producto debe ser un número entero'),
+});
 
 @ApiTags('Productos')
 @Controller('productos')
@@ -20,7 +25,7 @@ export class ProductosController {
 
   @Get(':id')
   @ApiOkResponse({ type: ProductoVista })
-  async buscar(@Param('id', ParseIntPipe) id: number): Promise<ProductoVista> {
+  async buscar(@Param('id', idProducto) id: number): Promise<ProductoVista> {
     return ProductoVista.desde(await this.productos.buscar(id));
   }
 
@@ -33,7 +38,7 @@ export class ProductosController {
   @Patch(':id')
   @ApiOkResponse({ type: ProductoVista })
   async actualizar(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', idProducto) id: number,
     @Body() entrada: ActualizarProducto,
   ): Promise<ProductoVista> {
     return ProductoVista.desde(await this.productos.actualizar(id, entrada));
@@ -42,7 +47,7 @@ export class ProductosController {
   @Delete(':id')
   @HttpCode(204)
   @ApiNoContentResponse()
-  borrar(@Param('id', ParseIntPipe) id: number): Promise<void> {
+  borrar(@Param('id', idProducto) id: number): Promise<void> {
     return this.productos.borrar(id);
   }
 }
@@ -58,7 +63,7 @@ export class InventarioController {
   @ApiOperation({ summary: 'Descuenta stock una vez por pedido' })
   @ApiOkResponse({ type: DescuentoVista })
   descontar(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', idProducto) id: number,
     @Body() entrada: SolicitarDescuento,
     @Headers('x-servicio-token') token: string | undefined,
   ): Promise<DescuentoVista> {

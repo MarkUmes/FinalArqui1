@@ -1,10 +1,11 @@
 import 'reflect-metadata';
-import { Module, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, Module, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Autenticacion, Usuario } from './autenticacion.js';
 import { BrokerController } from './controlador.js';
+import { ErroresEntrada } from './errores-entrada.js';
 import { JwtGuard, LecturaGuard, ServicioGuard } from './guardas.js';
 import { Proxy } from './proxy.js';
 
@@ -29,7 +30,21 @@ import { Proxy } from './proxy.js';
 class App {}
 
 const app = await NestFactory.create(App);
-app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true }));
+app.useGlobalFilters(new ErroresEntrada(app.getHttpAdapter()));
+app.useGlobalPipes(new ValidationPipe({
+  transform: true,
+  whitelist: true,
+  forbidNonWhitelisted: true,
+  exceptionFactory: (errores) => new BadRequestException(
+    errores.flatMap(({ property, constraints }) =>
+      Object.entries(constraints ?? {}).map(([regla, mensaje]) => {
+        if (regla === 'whitelistValidation') return `El campo "${property}" no está permitido`;
+        if (regla === 'isObject') return 'El cuerpo de la solicitud debe ser un objeto JSON';
+        return mensaje;
+      }),
+    ),
+  ),
+}));
 const swagger = new DocumentBuilder()
   .setTitle('Broker de la tienda')
   .setVersion('1.0')

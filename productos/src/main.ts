@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Module, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, Module, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -28,7 +28,20 @@ import { Productos } from './productos.js';
 class App {}
 
 const app = await NestFactory.create(App);
-app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true }));
+app.useGlobalPipes(new ValidationPipe({
+  transform: true,
+  whitelist: true,
+  forbidNonWhitelisted: true,
+  exceptionFactory: (errores) => new BadRequestException(
+    errores.flatMap(({ property, constraints }) =>
+      Object.entries(constraints ?? {}).map(([regla, mensaje]) => {
+        if (regla === 'whitelistValidation') return `El campo "${property}" no está permitido`;
+        if (regla === 'isObject') return 'El cuerpo de la solicitud debe ser un objeto JSON';
+        return mensaje;
+      }),
+    ),
+  ),
+}));
 const swagger = new DocumentBuilder().setTitle('Productos').setVersion('1.0').build();
 SwaggerModule.setup('docs', app, () => SwaggerModule.createDocument(app, swagger));
 await app.listen(Number(process.env.PORT ?? 3001), '0.0.0.0');

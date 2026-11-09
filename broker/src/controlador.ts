@@ -8,13 +8,13 @@ import { Proxy } from './proxy.js';
 
 class Login {
   @ApiProperty({ example: 'demo' })
-  @IsString()
-  @Length(1, 80)
+  @IsString({ message: 'El usuario debe ser texto' })
+  @Length(1, 80, { message: 'El usuario debe tener entre 1 y 80 caracteres' })
   usuario!: string;
 
   @ApiProperty({ format: 'password' })
-  @IsString()
-  @Length(1, 128)
+  @IsString({ message: 'La contraseña debe ser texto' })
+  @Length(1, 128, { message: 'La contraseña debe tener entre 1 y 128 caracteres' })
   password!: string;
 }
 

@@ -39,7 +39,7 @@ export class ProductosCliente {
       case 404:
         throw new NotFoundException('El producto no existe');
       case 409:
-        throw new ConflictException('El descuento no se pudo aplicar por falta de stock o conflicto de pedido');
+        throw new ConflictException('El descuento no se pudo aplicar por falta de existencias o conflicto de pedido');
       case 503:
         throw new ServiceUnavailableException('Productos no está disponible');
       case 504:

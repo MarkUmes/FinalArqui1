@@ -78,7 +78,7 @@ export class Productos {
 
     // Comunicar el error después del commit conserva el resultado para los reintentos.
     if (movimiento.resultado === 404) throw new NotFoundException('El producto no existe');
-    if (movimiento.resultado === 409) throw new ConflictException('Stock insuficiente');
+    if (movimiento.resultado === 409) throw new ConflictException('Existencias insuficientes');
     return { precioUnitario: movimiento.precioUnitario! };
   }
 }

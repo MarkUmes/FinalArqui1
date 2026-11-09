@@ -23,5 +23,10 @@ test('buscar devuelve 404 cuando el repositorio no encuentra el producto', async
 
 test('un producto nuevo requiere precio y stock positivos', async () => {
   const entrada = Object.assign(new CrearProducto(), { nombre: 'Café', precio: 0, stock: 0 });
-  assert.deepEqual((await validate(entrada)).map((error) => error.property), ['precio', 'stock']);
+  const errores = await validate(entrada);
+  assert.deepEqual(errores.map((error) => error.property), ['precio', 'stock']);
+  assert.deepEqual(errores.map((error) => error.constraints?.min), [
+    'El precio debe ser de al menos 0.01',
+    'Las existencias deben ser de al menos 1 unidad',
+  ]);
 });

@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: datos-mysql
+  namespace: tienda
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: tienda
+spec:
+  replicas: 1
+  # Un solo proceso MySQL puede escribir en el volumen.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: mysql
+          image: mysql:8.4
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tienda-secretos
+                  key: MYSQL_ROOT_PASSWORD
+            - name: BROKER_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tienda-secretos
+                  key: BROKER_DB_PASSWORD
+            - name: PRODUCTOS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tienda-secretos
+                  key: PRODUCTOS_DB_PASSWORD
+            - name: PEDIDOS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tienda-secretos
+                  key: PEDIDOS_DB_PASSWORD
+          volumeMounts:
+            - name: datos
+              mountPath: /var/lib/mysql
+            - name: inicio
+              mountPath: /docker-entrypoint-initdb.d
+              readOnly: true
+          readinessProbe:
+            exec:
+              command: ["mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+            periodSeconds: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+      volumes:
+        - name: datos
+          persistentVolumeClaim:
+            claimName: datos-mysql
+        - name: inicio
+          configMap:
+            name: tienda-sql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: tienda
+spec:
+  selector:
+    app: mysql
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306
