@@ -1,7 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsInt, IsNumber, IsString, IsUUID, Length, Max, Min } from 'class-validator';
-import type { Producto } from './modelos.js';
 
 export class CrearProducto {
   @ApiProperty({ example: 'Café', minLength: 1, maxLength: 120 })
@@ -35,28 +34,4 @@ export class SolicitarDescuento {
   @Min(1, { message: 'La cantidad debe ser de al menos 1 unidad' })
   @Max(2147483647, { message: 'La cantidad no puede superar 2147483647 unidades' })
   cantidad!: number;
-}
-
-export class DescuentoVista {
-  @ApiProperty({ example: '25.50' })
-  precioUnitario!: string;
-}
-
-export class ProductoVista {
-  @ApiProperty()
-  id!: number;
-
-  @ApiProperty()
-  nombre!: string;
-
-  @ApiProperty({ example: '25.50' })
-  precio!: string;
-
-  @ApiProperty({ example: 5, minimum: 0, type: 'integer' })
-  stock!: number;
-
-  static desde(producto: Producto): ProductoVista {
-    const { id, nombre, precio, stock } = producto;
-    return { id, nombre, precio, stock };
-  }
 }

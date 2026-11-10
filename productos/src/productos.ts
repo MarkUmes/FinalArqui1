@@ -1,8 +1,9 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
-import { Descuento, Producto } from './modelos.js';
-import type { ActualizarProducto, CrearProducto, DescuentoVista, SolicitarDescuento } from './vista.js';
+import type { ActualizarProducto, CrearProducto, SolicitarDescuento } from './controlador/entradas.js';
+import { Descuento, Producto } from './modelo/modelos.js';
+import type { DescuentoVista } from './vista/vista.js';
 
 @Injectable()
 export class Productos {

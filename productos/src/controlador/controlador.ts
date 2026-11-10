@@ -5,8 +5,9 @@ import {
 import {
   ApiCreatedResponse, ApiHeader, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiTags,
 } from '@nestjs/swagger';
-import { Productos } from './productos.js';
-import { ActualizarProducto, CrearProducto, DescuentoVista, ProductoVista, SolicitarDescuento } from './vista.js';
+import { Productos } from '../productos.js';
+import { DescuentoVista, ProductoVista } from '../vista/vista.js';
+import { ActualizarProducto, CrearProducto, SolicitarDescuento } from './entradas.js';
 
 const idProducto = new ParseIntPipe({
   exceptionFactory: () => new BadRequestException('El identificador del producto debe ser un número entero'),

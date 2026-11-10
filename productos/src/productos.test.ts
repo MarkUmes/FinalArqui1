@@ -3,9 +3,9 @@ import { test } from 'node:test';
 import { NotFoundException } from '@nestjs/common';
 import { validate } from 'class-validator';
 import type { DataSource, Repository } from 'typeorm';
-import type { Producto } from './modelos.js';
+import { CrearProducto } from './controlador/entradas.js';
+import type { Producto } from './modelo/modelos.js';
 import { Productos } from './productos.js';
-import { CrearProducto } from './vista.js';
 
 test('crear conserva el precio con dos decimales', async (t) => {
   const save = t.mock.fn(async (producto: Omit<Producto, 'id'>) => ({ id: 1, ...producto }));

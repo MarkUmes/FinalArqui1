@@ -3,8 +3,8 @@ import { BadRequestException, Module, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProductosController, InventarioController } from './controlador.js';
-import { Descuento, Producto } from './modelos.js';
+import { ProductosController, InventarioController } from './controlador/controlador.js';
+import { Descuento, Producto } from './modelo/modelos.js';
 import { Productos } from './productos.js';
 
 @Module({
